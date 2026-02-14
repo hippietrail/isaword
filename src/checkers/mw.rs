@@ -25,14 +25,14 @@ pub async fn mw(word: &str) -> CheckerResult {
             match earl.fetch_dom().await {
                 Ok(dom) => {
                     // Navigate to body
-                    match domstroll(
-                        "mw",
-                        false,
-                        &dom,
-                        &[
-                            (3, "body", None),
-                        ],
-                    ) {
+                     match domstroll(
+                         "mw",
+                         false,
+                         &dom,
+                         &[
+                             (2, "body", None),
+                         ],
+                     ) {
                         Ok(body_elem) => {
                             let body_classes = body_elem
                                 .value()
@@ -62,7 +62,7 @@ pub async fn mw(word: &str) -> CheckerResult {
                                 false,
                                 &dom,
                                 &[
-                                    (3, "body", None),
+                                    (2, "body", None),
                                     (17, "div", Some(DomOpts { cls: Some("outer-container".to_string()), ..Default::default() })),
                                     (1, "div", Some(DomOpts { cls: Some("main-container".to_string()), ..Default::default() })),
                                     (3, "div", Some(DomOpts { cls: Some("redesign-container".to_string()), optional: true, ..Default::default() })),

@@ -23,20 +23,20 @@ pub async fn wordnet(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (3, "body", None),
+                            (1, "body", None),
                         ],
                     ) {
                         Ok(body_elem) => {
-                            // Filter to only tag nodes and get tag names
-                            let tag_nodes: Vec<_> = body_elem
-                                .children()
-                                .filter_map(|child| scraper::element_ref::ElementRef::wrap(child))
-                                .collect();
-                            
-                            let tag_names: Vec<&str> = tag_nodes
-                                .iter()
-                                .map(|e| e.value().name())
-                                .collect();
+                             // Filter to only tag nodes and get tag names
+                             let tag_nodes: Vec<_> = body_elem
+                                 .children()
+                                 .filter_map(|child| scraper::element_ref::ElementRef::wrap(child))
+                                 .collect();
+                             
+                             let tag_names: Vec<&str> = tag_nodes
+                                 .iter()
+                                 .map(|e| e.value().name())
+                                 .collect();
                             
                             // Check for not-found pattern: [form, form, h3]
                             if tag_names.len() >= 3

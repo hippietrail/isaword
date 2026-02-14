@@ -27,37 +27,37 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
             match earl.fetch_dom().await {
                 Ok(dom) => {
                     // Step 1: Navigate to ox-container
-                    match domstroll(
-                        "ox",
-                        false,
-                        &dom,
-                        &[
-                            (3, "body", None),
-                            (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
-                        ],
-                    ) {
+                     match domstroll(
+                         "ox",
+                         false,
+                         &dom,
+                         &[
+                             (2, "body", None),
+                             (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
+                         ],
+                     ) {
                         Ok(_ox_container) => {
                             // Step 2: Navigate through ox_container's children to find xenglish
-                            match domstroll(
-                                "ox",
-                                false,
-                                &dom,
-                                &[
-                                    (3, "body", None),
-                                    (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
-                                    (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), optional: true, ..Default::default() })),
-                                ],
-                            ) {
+                             match domstroll(
+                                 "ox",
+                                 false,
+                                 &dom,
+                                 &[
+                                     (2, "body", None),
+                                     (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
+                                     (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), optional: true, ..Default::default() })),
+                                 ],
+                             ) {
                                 Ok(_xenglish) => {
                                     // xenglish found, continue to find webtop
-                                    match domstroll(
-                                        "ox",
-                                        false,
-                                        &dom,
-                                        &[
-                                            (3, "body", None),
-                                            (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
-                                            (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), ..Default::default() })),
+                                     match domstroll(
+                                         "ox",
+                                         false,
+                                         &dom,
+                                         &[
+                                             (2, "body", None),
+                                             (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
+                                             (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), ..Default::default() })),
                                             (3, "div", Some(DomOpts { cls: Some("responsive_row".to_string()), ..Default::default() })),
                                             (3, "div", Some(DomOpts { cls: Some("responsive_entry_center".to_string()), ..Default::default() })),
                                             (1, "div", Some(DomOpts { cls: Some("responsive_entry_center_wrap".to_string()), ..Default::default() })),

@@ -22,13 +22,13 @@ pub async fn chambers(word: &str) -> CheckerResult {
             match earl.fetch_dom().await {
                 Ok(dom) => {
                     // Navigate: body.page-template-template-search-results > wrapper > content >
-                    //           row > search-results > fullsearchresults > p.message
-                    match domstroll(
-                        "cham",
-                        false,
-                        &dom,
-                        &[
-                            (5, "body", Some(DomOpts { cls: Some("page-template-template-search-results".to_string()), ..Default::default() })),
+                     //           row > search-results > fullsearchresults > p.message
+                     match domstroll(
+                         "cham",
+                         false,
+                         &dom,
+                         &[
+                             (2, "body", Some(DomOpts { cls: Some("page-template-template-search-results".to_string()), ..Default::default() })),
                             (7, "div", Some(DomOpts { id: Some("wrapper".to_string()), ..Default::default() })),
                             (4, "section", Some(DomOpts { id: Some("content".to_string()), ..Default::default() })),
                             (1, "div", Some(DomOpts { cls: Some("row".to_string()), ..Default::default() })),

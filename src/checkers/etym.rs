@@ -31,12 +31,12 @@ async fn etym_internal(word: &str) -> (Option<bool>, String) {
             match earl.fetch_dom().await {
                 Ok(dom) => {
                     // Navigate to the main container
-                    match domstroll(
-                        "etym",
-                        false,
-                        &dom,
-                        &[
-                            (3, "body", None),
+                     match domstroll(
+                         "etym",
+                         false,
+                         &dom,
+                         &[
+                             (2, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", None),
                             (0, "div", Some(DomOpts { cls: Some("container--1mazc".to_string()), ..Default::default() })),

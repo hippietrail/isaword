@@ -20,12 +20,12 @@ pub async fn wordnik(word: &str) -> CheckerResult {
             match earl.fetch_dom().await {
                 Ok(dom) => {
                     // Navigate to div.guts (the "active" class is on the parent)
-                    match domstroll(
-                        "wordnik1",
-                        false,
-                        &dom,
-                        &[
-                            (3, "body", None),
+                     match domstroll(
+                         "wordnik1",
+                         false,
+                         &dom,
+                         &[
+                             (2, "body", None),
                             (3, "div", Some(DomOpts { cls: Some("word_page".to_string()), ..Default::default() })),
                             (1, "div", Some(DomOpts { cls: Some("content".to_string()), ..Default::default() })),
                             (7, "div", Some(DomOpts { cls: Some("module-row".to_string()), ..Default::default() })),
