@@ -25,6 +25,8 @@ pub mod mw;
 pub mod oxfordlearners;
 pub mod wordnet;
 pub mod wordnik;
+pub mod etym;
+pub mod etymonline;
 
 /// Result of a single dictionary checker
 /// 
