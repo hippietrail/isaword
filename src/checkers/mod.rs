@@ -16,6 +16,10 @@
 pub mod urban;
 pub mod oed;
 pub mod wikt;
+pub mod cambridge;
+pub mod chambers;
+pub mod dictcom;
+pub mod longman;
 
 /// Result of a single dictionary checker
 /// 
