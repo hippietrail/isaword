@@ -14,6 +14,8 @@
 //! Checkers are designed to be executed in parallel via futures::join_all()
 
 pub mod urban;
+pub mod oed;
+pub mod wikt;
 
 /// Result of a single dictionary checker
 /// 

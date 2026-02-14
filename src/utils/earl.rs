@@ -50,6 +50,29 @@ impl Earl {
         })
     }
 
+    /// Create Earl with custom headers (e.g., User-Agent)
+    pub fn with_headers(
+        origin: &str,
+        pathname: &str,
+        params: Option<HashMap<&str, String>>,
+        headers: HashMap<String, String>,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut url = Url::parse(origin)?;
+        url.set_path(pathname);
+
+        if let Some(p) = params {
+            for (key, value) in p {
+                url.query_pairs_mut().append_pair(key, &value);
+            }
+        }
+
+        Ok(Earl {
+            url,
+            client: Client::new(),
+            headers: Some(headers),
+        })
+    }
+
     pub fn set_basic_pathname(&mut self, pathname: &str) {
         self.url.set_path(pathname);
     }
@@ -82,7 +105,15 @@ impl Earl {
 
     /// Fetch and parse as JSON
     pub async fn fetch_json(&self) -> Result<Value, Box<dyn std::error::Error>> {
-        let resp = self.client.get(self.url.as_str()).send().await?;
+        let mut req = self.client.get(self.url.as_str());
+        
+        if let Some(hdrs) = &self.headers {
+            for (key, value) in hdrs {
+                req = req.header(key, value);
+            }
+        }
+        
+        let resp = req.send().await?;
         let json = resp.json().await?;
         Ok(json)
     }
@@ -95,7 +126,15 @@ impl Earl {
 
     /// Fetch raw HTML text
     pub async fn fetch_text(&self) -> Result<String, Box<dyn std::error::Error>> {
-        let resp = self.client.get(self.url.as_str()).send().await?;
+        let mut req = self.client.get(self.url.as_str());
+        
+        if let Some(hdrs) = &self.headers {
+            for (key, value) in hdrs {
+                req = req.header(key, value);
+            }
+        }
+        
+        let resp = req.send().await?;
         let text = resp.text().await?;
         Ok(text)
     }
