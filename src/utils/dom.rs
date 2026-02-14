@@ -1,6 +1,10 @@
 use scraper::{Html};
 use scraper::element_ref::ElementRef;
 
+/// Options for DOM element validation in domstroll
+/// 
+/// Mirrors the options object from TypeScript domStroll:
+/// /Users/hippietrail/hippiebot.js/ute/dom.ts
 #[derive(Debug, Clone)]
 pub struct DomOpts {
     pub id: Option<String>,
@@ -22,10 +26,17 @@ impl Default for DomOpts {
 
 /// DOM tree walker - navigates HTML structure with assertions
 /// 
+/// This is a Rust port of the TypeScript domStroll function from:
+/// /Users/hippietrail/hippiebot.js/ute/dom.ts
+/// 
 /// Takes a sequence of (index, tag_name, options) tuples and walks the DOM tree,
 /// validating structure at each step. Returns the final ElementRef or error.
 /// 
-/// Pattern from TypeScript domStroll function.
+/// NOTE: Differs slightly from TypeScript implementation:
+/// - TS uses raw DOM tree children array with indices
+/// - Rust scraper doesn't expose raw tree nodes, so we filter element children and index them
+/// - This is functionally equivalent but may behave differently if HTML has unusual structure
+/// - See issue isaword-026 for details on this gotcha
 pub fn domstroll<'a>(
     site: &str,
     debug: bool,

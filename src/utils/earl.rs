@@ -4,6 +4,19 @@ use serde_json::Value;
 use std::collections::HashMap;
 use url::Url;
 
+/// Earl - HTTP client wrapper for web scraping
+/// 
+/// This is a Rust port of the TypeScript Earl class from:
+/// /Users/hippietrail/hippiebot.js/ute/earl.ts
+/// 
+/// Wraps reqwest with convenient methods for:
+/// - Building URLs with path segments and query parameters
+/// - Fetching and parsing JSON
+/// - Fetching and parsing HTML DOM
+/// - Checking for HTTP redirects
+/// 
+/// The wrapper makes it easy to compare Rust and TypeScript implementations
+/// during debugging - function signatures and behavior are intentionally kept similar.
 pub struct Earl {
     url: Url,
     client: Client,
