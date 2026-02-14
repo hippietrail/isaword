@@ -32,7 +32,6 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (2, "html", None),
                             (3, "body", None),
                             (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                         ],
@@ -44,7 +43,6 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
                                 false,
                                 &dom,
                                 &[
-                                    (2, "html", None),
                                     (3, "body", None),
                                     (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                                     (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), optional: true, ..Default::default() })),
@@ -57,7 +55,6 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
                                         false,
                                         &dom,
                                         &[
-                                            (2, "html", None),
                                             (3, "body", None),
                                             (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                                             (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), ..Default::default() })),

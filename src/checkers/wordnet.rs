@@ -23,7 +23,6 @@ pub async fn wordnet(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (2, "html", None),
                             (3, "body", None),
                         ],
                     ) {

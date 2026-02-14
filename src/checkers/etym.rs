@@ -36,7 +36,6 @@ async fn etym_internal(word: &str) -> (Option<bool>, String) {
                         false,
                         &dom,
                         &[
-                            (3, "html", None),
                             (3, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", None),

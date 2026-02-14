@@ -25,7 +25,6 @@ pub async fn wordnik(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (2, "html", None),
                             (3, "body", None),
                             (3, "div", Some(DomOpts { cls: Some("word_page".to_string()), ..Default::default() })),
                             (1, "div", Some(DomOpts { cls: Some("content".to_string()), ..Default::default() })),

@@ -30,7 +30,6 @@ pub async fn mw(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (2, "html", None),
                             (3, "body", None),
                         ],
                     ) {
@@ -63,7 +62,6 @@ pub async fn mw(word: &str) -> CheckerResult {
                                 false,
                                 &dom,
                                 &[
-                                    (2, "html", None),
                                     (3, "body", None),
                                     (17, "div", Some(DomOpts { cls: Some("outer-container".to_string()), ..Default::default() })),
                                     (1, "div", Some(DomOpts { cls: Some("main-container".to_string()), ..Default::default() })),

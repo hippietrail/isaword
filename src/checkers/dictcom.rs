@@ -25,7 +25,6 @@ pub async fn dictcom(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (3, "html", None),
                             (3, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", Some(DomOpts { cls: Some("dictionary-site".to_string()), ..Default::default() })),

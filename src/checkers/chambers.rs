@@ -28,7 +28,6 @@ pub async fn chambers(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (8, "html", None),
                             (5, "body", Some(DomOpts { cls: Some("page-template-template-search-results".to_string()), ..Default::default() })),
                             (7, "div", Some(DomOpts { id: Some("wrapper".to_string()), ..Default::default() })),
                             (4, "section", Some(DomOpts { id: Some("content".to_string()), ..Default::default() })),

@@ -25,7 +25,6 @@ pub async fn longman(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (2, "html", None),
                             (1, "head", Some(DomOpts { cls: Some("metadata".to_string()), optional: true, ..Default::default() })),
                         ],
                     ) {

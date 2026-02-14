@@ -26,7 +26,6 @@ pub async fn ahd(word: &str) -> CheckerResult {
                         false,
                         &dom,
                         &[
-                            (0, "html", None),
                             (1, "body", None),
                             (3, "div", Some(DomOpts { id: Some("content".to_string()), ..Default::default() })),
                             (2, "div", Some(DomOpts { cls: Some("container3".to_string()), ..Default::default() })),

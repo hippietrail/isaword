@@ -46,22 +46,29 @@ pub fn domstroll<'a>(
     let mut current = scraper::element_ref::ElementRef::wrap(*html.root_element())
         .ok_or_else(|| "[domStroll] failed to get root element".to_string())?;
 
+    // If path is empty, return root
+    if path.is_empty() {
+        return Ok(current);
+    }
+
     for (step, (index, expected_tag, opts_maybe)) in path.iter().enumerate() {
         let opts = opts_maybe.clone().unwrap_or_default();
 
-        // Get children and select nth child
-        let children: Vec<ElementRef> = current
-            .children()
-            .filter_map(|child| ElementRef::wrap(child))
-            .collect();
-
-        if debug {
-            print_children_for_step(site, step, &current, &children);
-        }
-
-        let node = children
+        // Get ALL children (including text nodes, comments, etc) - matches TypeScript behavior
+        let all_children: Vec<_> = current.children().collect();
+        
+        // Select the child at the specified index
+        let child_node = all_children
             .get(*index)
             .ok_or_else(|| format!("[domStroll] {}#{} not a node (index {} out of bounds)", site, step, index))?;
+
+        // Try to wrap as ElementRef - only elements are relevant
+        let node = ElementRef::wrap(*child_node)
+            .ok_or_else(|| format!("[domStroll] {}#{} child at index {} is not an element node", site, step, index))?;
+
+        if debug {
+            print_children_for_step(site, step, &current, &[node.clone()]);
+        }
 
         // Validate tag name
         if node.value().name() != *expected_tag {
