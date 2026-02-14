@@ -20,6 +20,11 @@ pub mod cambridge;
 pub mod chambers;
 pub mod dictcom;
 pub mod longman;
+pub mod ahd;
+pub mod mw;
+pub mod oxfordlearners;
+pub mod wordnet;
+pub mod wordnik;
 
 /// Result of a single dictionary checker
 /// 
