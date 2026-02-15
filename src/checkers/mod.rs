@@ -17,18 +17,26 @@
 //!
 //! Collins dictionary is NOT supported. See issue isaword-go4 for details.
 //!
-//! REASON: Collins website is entirely built with JavaScript (client-side rendering).
-//! The initial HTML response contains only a JavaScript bundle - no actual dictionary
-//! content that can be scraped server-side.
+//! REASON: Collins uses Cloudflare bot detection AND client-side JavaScript rendering.
 //!
-//! Traditional scraping approach (Earl + domstroll) requires server-rendered HTML with
-//! DOM content present in the initial response. Collins renders everything client-side,
-//! making it impossible to determine word existence without a headless browser.
+//! TECHNICAL BARRIERS:
+//! 1. Cloudflare Challenge: Initial response is "Just a moment..." HTML with bot detection
+//!    script. Cloudflare requires solving a challenge token before serving content.
+//! 2. JavaScript Rendering: Even after bypassing Cloudflare, the actual dictionary content
+//!    is rendered entirely by JavaScript, not present in initial HTML.
 //!
-//! TO SUPPORT COLLINS IN THE FUTURE:
-//! 1. Implement headless browser integration (headless_chrome, puppeteer-rs, etc)
-//! 2. Investigate if Collins has a public API endpoint
-//! 3. Evaluate performance/complexity tradeoffs
+//! This makes Collins impossible to scrape with standard HTTP requests (reqwest + scraper).
+//! Traditional approach (Earl + domstroll) can't handle either barrier.
+//!
+//! REQUIREMENTS TO SUPPORT COLLINS:
+//! 1. Cloudflare bypass: Would need to handle CF challenge tokens (cloudflare-scraper crate?)
+//! 2. JavaScript rendering: Would need headless browser (headless_chrome, puppeteer-rs, etc)
+//! 3. Performance concern: Headless browser + Cloudflare handling would be much slower
+//!
+//! ALTERNATIVES TO INVESTIGATE:
+//! 1. Check if Collins has a public API endpoint
+//! 2. Evaluate using cloudflare-scraper + headless browser combo
+//! 3. Consider if effort is worth the performance cost
 //!
 //! See: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.ts#L221-L239
 
