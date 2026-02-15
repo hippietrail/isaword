@@ -12,6 +12,25 @@
 //! - Handles network errors gracefully (returns null, continues execution)
 //! 
 //! Checkers are designed to be executed in parallel via futures::join_all()
+//!
+//! # Not Implemented: Collins Dictionary
+//!
+//! Collins dictionary is NOT supported. See issue isaword-go4 for details.
+//!
+//! REASON: Collins website is entirely built with JavaScript (client-side rendering).
+//! The initial HTML response contains only a JavaScript bundle - no actual dictionary
+//! content that can be scraped server-side.
+//!
+//! Traditional scraping approach (Earl + domstroll) requires server-rendered HTML with
+//! DOM content present in the initial response. Collins renders everything client-side,
+//! making it impossible to determine word existence without a headless browser.
+//!
+//! TO SUPPORT COLLINS IN THE FUTURE:
+//! 1. Implement headless browser integration (headless_chrome, puppeteer-rs, etc)
+//! 2. Investigate if Collins has a public API endpoint
+//! 3. Evaluate performance/complexity tradeoffs
+//!
+//! See: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.ts#L221-L239
 
 pub mod urban;
 pub mod oed;
