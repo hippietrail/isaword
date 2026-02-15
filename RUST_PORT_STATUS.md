@@ -30,7 +30,8 @@ Tested with: `well-being` (hyphen), `SCUBA` (all-caps), `Shakespeare` (title-cas
 
 #### `Shakespeare` (title-case proper noun)
 - **Case handling**: Working correctly
-- **Results**: Not found in dictionary checkers (expected - proper nouns)
+- **Results**: Found in 3 checkers (American Heritage, Wiktionary, Urban Dictionary)
+- **Not found in**: Cambridge, Chambers, Longman, Oxford Learners, Wordnik
 - **Match**: ✅ Identical to TypeScript
 
 ## Working Checkers (7/13)
