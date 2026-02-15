@@ -32,3 +32,6 @@ futures = "0.3"
 
 # CLI argument parsing
 clap = { version = "4", features = ["derive"] }
+
+# ANSI colors for terminal output
+colored = "2"

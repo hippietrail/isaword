@@ -15,6 +15,7 @@ pub use utils::earl::Earl;
 pub use utils::dom::domstroll;
 pub use checkers::CheckerResult;
 pub use utils::format::human_friendly_list_formatter;
+pub use utils::theme::{get_theme, format_dict_colored};
 
 /// Run the word checker - main entry point for the CLI
 pub async fn run_cli(word: &str) {
@@ -63,24 +64,25 @@ pub async fn checker_all(word: &str) -> Vec<CheckerResult> {
     ]
 }
 
-/// Format results and print to stdout
+/// Format results and print to stdout with colored output
 /// 
 /// Mirrors the TypeScript isaword function logic exactly (line 38-72)
+/// but adds per-dictionary colors/emojis for visual distinction
 pub async fn format_and_print_results(word: &str, results: &[CheckerResult]) {
-    // Categorize results
-    let ins: Vec<&str> = results
+    // Categorize results with full result objects for colored output
+    let ins: Vec<&CheckerResult> = results
         .iter()
-        .filter_map(|r| if r.result == Some(true) { Some(r.name) } else { None })
+        .filter(|r| r.result == Some(true))
         .collect();
 
-    let notins: Vec<&str> = results
+    let notins: Vec<&CheckerResult> = results
         .iter()
-        .filter_map(|r| if r.result == Some(false) { Some(r.name) } else { None })
+        .filter(|r| r.result == Some(false))
         .collect();
 
-    let nulls: Vec<&str> = results
+    let nulls: Vec<&CheckerResult> = results
         .iter()
-        .filter_map(|r| if r.result.is_none() { Some(r.name) } else { None })
+        .filter(|r| r.result.is_none())
         .collect();
 
     let community_dict_count = results
@@ -93,11 +95,16 @@ pub async fn format_and_print_results(word: &str, results: &[CheckerResult]) {
         .filter(|r| !r.is_community && r.result == Some(true))
         .count();
 
-    // Log results
+    // Log results with colored output
     if !ins.is_empty() {
+        let ins_colored: Vec<String> = ins
+            .iter()
+            .map(|r| format_dict_colored(r.name, r.result))
+            .collect();
+        let ins_formatted: Vec<&str> = ins_colored.iter().map(|s| s.as_str()).collect();
         println!(
             "[ISAWORD] in: {}",
-            human_friendly_list_formatter(&ins, "and")
+            human_friendly_list_formatter(&ins_formatted, "and")
         );
     } else {
         println!("[ISAWORD] in: none");
@@ -111,16 +118,26 @@ pub async fn format_and_print_results(word: &str, results: &[CheckerResult]) {
     }
 
     if !notins.is_empty() {
+        let notins_colored: Vec<String> = notins
+            .iter()
+            .map(|r| format_dict_colored(r.name, r.result))
+            .collect();
+        let notins_formatted: Vec<&str> = notins_colored.iter().map(|s| s.as_str()).collect();
         println!(
             "[ISAWORD] not in: {}",
-            human_friendly_list_formatter(&notins, "and")
+            human_friendly_list_formatter(&notins_formatted, "and")
         );
     }
 
     if !nulls.is_empty() {
+        let nulls_colored: Vec<String> = nulls
+            .iter()
+            .map(|r| format_dict_colored(r.name, r.result))
+            .collect();
+        let nulls_formatted: Vec<&str> = nulls_colored.iter().map(|s| s.as_str()).collect();
         println!(
             "[ISAWORD] null: {}",
-            human_friendly_list_formatter(&nulls, "and")
+            human_friendly_list_formatter(&nulls_formatted, "and")
         );
     }
 
@@ -134,34 +151,38 @@ pub async fn format_and_print_results(word: &str, results: &[CheckerResult]) {
         if pro_dict_count == 0 {
             format!(
                 "'{}' is only in {}, not in any professionally edited dictionary!",
-                word, ins[0]
+                word, ins[0].name
             )
         } else {
             format!(
                 "Hmm '{}' is in {}, but not in any other dictionary!",
-                word, ins[0]
+                word, ins[0].name
             )
         }
     } else {
         // In multiple dictionaries
         if community_dict_count == ins.len() {
+            let ins_names: Vec<&str> = ins.iter().map(|r| r.name).collect();
             format!(
                 "'{}' is only in {} but not in any professionally edited dictionary!",
                 word,
-                human_friendly_list_formatter(&ins, "and")
+                human_friendly_list_formatter(&ins_names, "and")
             )
         } else if !notins.is_empty() {
+            let ins_names: Vec<&str> = ins.iter().map(|r| r.name).collect();
+            let notins_names: Vec<&str> = notins.iter().map(|r| r.name).collect();
             format!(
                 "'{}' is in {} but not in {}",
                 word,
-                human_friendly_list_formatter(&ins, "and"),
-                human_friendly_list_formatter(&notins, "or")
+                human_friendly_list_formatter(&ins_names, "and"),
+                human_friendly_list_formatter(&notins_names, "or")
             )
         } else {
+            let ins_names: Vec<&str> = ins.iter().map(|r| r.name).collect();
             format!(
                 "'{}' is in {} at least...",
                 word,
-                human_friendly_list_formatter(&ins, "and")
+                human_friendly_list_formatter(&ins_names, "and")
             )
         }
     };
@@ -176,11 +197,8 @@ pub async fn run_cli_single(word: &str, dictionary: &str) {
     match result {
         Some(result) => {
             println!("[ISAWORD] Checking '{}' in {}", word, result.name);
-            match result.result {
-                Some(true) => println!("✓ Found"),
-                Some(false) => println!("✗ Not found"),
-                None => println!("? Unknown/Error"),
-            }
+            let status_line = format_dict_colored(result.name, result.result);
+            println!("{}", status_line);
         }
         None => {
             eprintln!("[ISAWORD] Unknown dictionary: {}", dictionary);
