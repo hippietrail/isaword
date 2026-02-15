@@ -1,6 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Wordnik checker
 /// 
@@ -18,14 +18,15 @@ pub async fn wordnik(word: &str) -> CheckerResult {
             earl.set_last_path_segment(word);
             
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Navigate to div.guts (the "active" class is on the parent)
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(2);
+                     // Navigate to div.guts (the "active" class is on the parent)
                      match domstroll(
                          "wordnik1",
                          false,
                          &dom,
                          &[
-                             (2, "body", None),
+                             (body_idx, "body", None),
                             (3, "div", Some(DomOpts { cls: Some("word_page".to_string()), ..Default::default() })),
                             (1, "div", Some(DomOpts { cls: Some("content".to_string()), ..Default::default() })),
                             (7, "div", Some(DomOpts { cls: Some("module-row".to_string()), ..Default::default() })),

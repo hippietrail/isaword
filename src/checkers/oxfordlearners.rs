@@ -1,6 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Oxford Learners Dictionary checker
 /// 
@@ -25,25 +25,26 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
             earl.set_last_path_segment(word);
             
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Step 1: Navigate to ox-container
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(2);
+                     // Step 1: Navigate to ox-container
                      match domstroll(
                          "ox",
                          false,
                          &dom,
                          &[
-                             (2, "body", None),
+                             (body_idx, "body", None),
                              (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                          ],
                      ) {
                         Ok(_ox_container) => {
                             // Step 2: Navigate through ox_container's children to find xenglish
-                             match domstroll(
-                                 "ox",
-                                 false,
-                                 &dom,
-                                 &[
-                                     (2, "body", None),
+                            match domstroll(
+                                "ox",
+                                false,
+                                &dom,
+                                &[
+                                    (body_idx, "body", None),
                                      (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                                      (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), optional: true, ..Default::default() })),
                                  ],
@@ -55,7 +56,7 @@ pub async fn oxfordlearners(word: &str) -> CheckerResult {
                                          false,
                                          &dom,
                                          &[
-                                             (2, "body", None),
+                                             (body_idx, "body", None),
                                              (1, "div", Some(DomOpts { id: Some("ox-container".to_string()), ..Default::default() })),
                                              (5, "div", Some(DomOpts { cls: Some("xenglish".to_string()), ..Default::default() })),
                                             (3, "div", Some(DomOpts { cls: Some("responsive_row".to_string()), ..Default::default() })),

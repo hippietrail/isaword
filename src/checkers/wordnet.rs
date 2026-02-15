@@ -1,5 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
+use crate::utils::dom::find_body_index;
 
 /// WordNet checker
 /// 
@@ -17,13 +18,14 @@ pub async fn wordnet(word: &str) -> CheckerResult {
     match Earl::new("http://wordnetweb.princeton.edu", "/perl/webwn", Some(params)) {
         Ok(earl) => {
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    match domstroll(
-                        "wordnet",
-                        false,
-                        &dom,
-                        &[
-                            (1, "body", None),
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(1);
+                     match domstroll(
+                         "wordnet",
+                         false,
+                         &dom,
+                         &[
+                             (body_idx, "body", None),
                         ],
                     ) {
                         Ok(body_elem) => {

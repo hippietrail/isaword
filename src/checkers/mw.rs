@@ -1,6 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Merriam-Webster Dictionary checker
 /// 
@@ -23,14 +23,15 @@ pub async fn mw(word: &str) -> CheckerResult {
             earl.set_last_path_segment(word);
             
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Navigate to body
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(2);
+                     // Navigate to body
                      match domstroll(
                          "mw",
                          false,
                          &dom,
                          &[
-                             (2, "body", None),
+                             (body_idx, "body", None),
                          ],
                      ) {
                         Ok(body_elem) => {
@@ -62,7 +63,7 @@ pub async fn mw(word: &str) -> CheckerResult {
                                 false,
                                 &dom,
                                 &[
-                                    (2, "body", None),
+                                    (body_idx, "body", None),
                                     (17, "div", Some(DomOpts { cls: Some("outer-container".to_string()), ..Default::default() })),
                                     (1, "div", Some(DomOpts { cls: Some("main-container".to_string()), ..Default::default() })),
                                     (3, "div", Some(DomOpts { cls: Some("redesign-container".to_string()), optional: true, ..Default::default() })),

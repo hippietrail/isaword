@@ -1,6 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Chambers Dictionary checker
 /// 
@@ -20,15 +20,16 @@ pub async fn chambers(word: &str) -> CheckerResult {
     match Earl::new("https://chambers.co.uk", "/search/", Some(params)) {
         Ok(earl) => {
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Navigate: body.page-template-template-search-results > wrapper > content >
+                 Ok(dom) => {
+                     // Navigate: body.page-template-template-search-results > wrapper > content >
                      //           row > search-results > fullsearchresults > p.message
+                     let body_idx = find_body_index(&dom).unwrap_or(3);
                      match domstroll(
                          "cham",
                          false,
                          &dom,
                          &[
-                             (2, "body", Some(DomOpts { cls: Some("page-template-template-search-results".to_string()), ..Default::default() })),
+                             (body_idx, "body", Some(DomOpts { cls: Some("page-template-template-search-results".to_string()), ..Default::default() })),
                             (7, "div", Some(DomOpts { id: Some("wrapper".to_string()), ..Default::default() })),
                             (4, "section", Some(DomOpts { id: Some("content".to_string()), ..Default::default() })),
                             (1, "div", Some(DomOpts { cls: Some("row".to_string()), ..Default::default() })),

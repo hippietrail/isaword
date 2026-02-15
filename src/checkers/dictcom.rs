@@ -1,6 +1,6 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Dictionary.com checker
 /// 
@@ -18,14 +18,15 @@ pub async fn dictcom(word: &str) -> CheckerResult {
             earl.set_last_path_segment(word);
             
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Navigate: html > body > #root > .dictionary-site > main
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(2);
+                     // Navigate: html > body > #root > .dictionary-site > main
                      match domstroll(
                          "dict.com",
                          false,
                          &dom,
                          &[
-                             (2, "body", None),
+                             (body_idx, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", Some(DomOpts { cls: Some("dictionary-site".to_string()), ..Default::default() })),
                             (1, "main", None),

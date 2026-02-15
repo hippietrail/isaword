@@ -24,6 +24,22 @@ impl Default for DomOpts {
     }
 }
 
+/// Find the body element's index in the root's children
+/// 
+/// Since different websites have different amounts of whitespace/comments,
+/// the body element can be at different indices. This helper finds it dynamically.
+pub fn find_body_index(html: &Html) -> Option<usize> {
+    let root = html.root_element();
+    for (i, child) in root.children().enumerate() {
+        if let Some(el) = ElementRef::wrap(child) {
+            if el.value().name() == "body" {
+                return Some(i);
+            }
+        }
+    }
+    None
+}
+
 /// DOM tree walker - navigates HTML structure with assertions
 /// 
 /// This is a Rust port of the TypeScript domStroll function from:

@@ -1,5 +1,5 @@
 use crate::{Earl, domstroll};
-use crate::utils::dom::DomOpts;
+use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Etymonline checker
 /// 
@@ -29,14 +29,15 @@ async fn etym_internal(word: &str) -> (Option<bool>, String) {
             earl.set_last_path_segment(word);
             
             match earl.fetch_dom().await {
-                Ok(dom) => {
-                    // Navigate to the main container
+                 Ok(dom) => {
+                     let body_idx = find_body_index(&dom).unwrap_or(2);
+                     // Navigate to the main container
                      match domstroll(
                          "etym",
                          false,
                          &dom,
                          &[
-                             (2, "body", None),
+                             (body_idx, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", None),
                             (0, "div", Some(DomOpts { cls: Some("container--1mazc".to_string()), ..Default::default() })),
