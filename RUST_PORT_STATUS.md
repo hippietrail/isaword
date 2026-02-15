@@ -16,8 +16,22 @@ Tested with: `hello`, `cat`
 ### Edge Cases
 Tested with: `well-being` (hyphen), `SCUBA` (all-caps), `Shakespeare` (title-case proper noun)
 - **Status**: Perfect match with TypeScript version
-- **URL encoding**: Working correctly for hyphens and special characters
-- **Case handling**: Working correctly for all-caps and mixed-case terms
+
+#### `well-being` (hyphenated word)
+- **URL encoding**: Working correctly for hyphens
+- **Results**: 8 checkers found (same as `hello`/`cat`)
+- **Match**: ✅ Identical to TypeScript
+
+#### `SCUBA` (all-caps acronym)
+- **Case handling**: Working correctly
+- **Results**: Only 4 checkers found (American Heritage, Chambers, Wiktionary, Urban Dictionary)
+- **Match**: ✅ Identical to TypeScript
+- **Note**: More restrictive than common words - some dictionaries don't include acronyms
+
+#### `Shakespeare` (title-case proper noun)
+- **Case handling**: Working correctly
+- **Results**: Not found in dictionary checkers (expected - proper nouns)
+- **Match**: ✅ Identical to TypeScript
 
 ## Working Checkers (7/13)
 These checkers successfully extract word information from their respective websites:
