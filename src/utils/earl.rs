@@ -7,7 +7,7 @@ use url::Url;
 /// Earl - HTTP client wrapper for web scraping
 /// 
 /// This is a Rust port of the TypeScript Earl class from:
-/// /Users/hippietrail/hippiebot.js/ute/earl.ts
+/// https://github.com/hippietrail/hippiebot.js/blob/main/ute/earl.ts
 /// 
 /// Wraps reqwest with convenient methods for:
 /// - Building URLs with path segments and query parameters

@@ -11,7 +11,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://chambers.co.uk/search/?query=WORD&title=21st
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 91-118)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 91-118)
 pub async fn chambers(word: &str) -> CheckerResult {
     let mut params = std::collections::HashMap::new();
     params.insert("query", word.to_string());

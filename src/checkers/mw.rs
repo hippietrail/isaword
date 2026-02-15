@@ -16,7 +16,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://www.merriam-webster.com/dictionary/WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 229-258)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 229-258)
 pub async fn mw(word: &str) -> CheckerResult {
     match Earl::new("https://www.merriam-webster.com", "/dictionary/", None) {
         Ok(mut earl) => {

@@ -10,7 +10,7 @@ use crate::utils::dom::DomOpts;
 /// 
 /// URL structure: https://www.ldoceonline.com/dictionary/WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 259-275)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 259-275)
 pub async fn longman(word: &str) -> CheckerResult {
     match Earl::new("https://www.ldoceonline.com", "/dictionary/", None) {
         Ok(mut earl) => {

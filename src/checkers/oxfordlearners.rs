@@ -14,7 +14,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// using setLastPathSegment pattern. Also, this is a very fragile selector
 /// due to deep nesting and reliance on specific class names.
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 171-209)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 171-209)
 pub async fn oxfordlearners(word: &str) -> CheckerResult {
     match Earl::new(
         "https://www.oxfordlearnersdictionaries.com",

@@ -2,8 +2,8 @@
 //! 
 //! This module implements 13 dictionary checker functions that mirror the TypeScript
 //! implementations from:
-//! - /Users/hippietrail/hippiebot.js/commands/isaword.js
-//! - /Users/hippietrail/lyre/commands/isaword.js
+//! - https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js
+//! - https://github.com/hippietrail/lyre/blob/main/commands/isaword.js
 //! 
 //! Each checker function:
 //! - Takes a word as input

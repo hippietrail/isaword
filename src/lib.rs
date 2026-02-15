@@ -1,8 +1,8 @@
 //! isaword - A Rust CLI tool for checking if a word exists in multiple dictionaries
 //! 
 //! This is a direct port of the `/isaword2` Discord bot slash command from:
-//! - /Users/hippietrail/hippiebot.js/commands/isaword.js
-//! - /Users/hippietrail/lyre/commands/isaword.js
+//! - https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js
+//! - https://github.com/hippietrail/lyre/blob/main/commands/isaword.js
 //! 
 //! Both Discord bot implementations are identical. This Rust version maintains
 //! the same logic for checking 14 different dictionaries in parallel and

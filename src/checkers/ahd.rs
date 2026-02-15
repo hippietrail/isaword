@@ -11,7 +11,7 @@ use crate::utils::dom::DomOpts;
 /// 
 /// URL structure: https://ahdictionary.com/word/search.html?q=WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 138-170)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 138-170)
 pub async fn ahd(word: &str) -> CheckerResult {
     let mut params = std::collections::HashMap::new();
     params.insert("q", word.to_string());

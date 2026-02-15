@@ -11,7 +11,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://www.dictionary.com/browse/WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 327-350)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 327-350)
 pub async fn dictcom(word: &str) -> CheckerResult {
     match Earl::new("https://www.dictionary.com", "/browse/", None) {
         Ok(mut earl) => {

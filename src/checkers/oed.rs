@@ -8,7 +8,7 @@ use std::collections::HashMap;
 /// API returns an array of suggestions with metadata.
 /// We match if any suggestion's name or label matches the input (case-sensitive).
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 403-433)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 403-433)
 pub async fn oed(word: &str) -> CheckerResult {
     let mut params = HashMap::new();
     params.insert("q", word.to_string());

@@ -9,7 +9,7 @@ use crate::checkers::CheckerResult;
 /// 
 /// Therefore: return true if NOT a redirect, false if is redirect.
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 79-90)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 79-90)
 pub async fn cambridge(word: &str) -> CheckerResult {
     match Earl::new(
         "https://dictionary.cambridge.org",

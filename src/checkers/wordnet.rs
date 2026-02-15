@@ -10,7 +10,7 @@ use crate::utils::dom::find_body_index;
 /// 
 /// URL structure: http://wordnetweb.princeton.edu/perl/webwn?s=WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 351-374)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 351-374)
 pub async fn wordnet(word: &str) -> CheckerResult {
     let mut params = std::collections::HashMap::new();
     params.insert("s", word.to_string());

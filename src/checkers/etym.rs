@@ -16,7 +16,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://etymonline.com/word/WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/ute/etym.ts (line 4-57)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/ute/etym.ts (line 4-57)
 pub async fn etym(word: &str) -> (Option<bool>, String) {
     let result = etym_internal(word).await;
     // Return just the bool, not the message string

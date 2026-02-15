@@ -11,7 +11,7 @@ use std::collections::HashMap;
 /// Note: API returns a JSON object with nested 'query.pages' structure.
 /// Each page either has 'pageid' (exists) or 'missing' (doesn't exist).
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/ute/wikt.ts (line 36-65)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/ute/wikt.ts (line 36-65)
 pub async fn wikt(wiki_lang: &str, word: &str) -> CheckerResult {
     match wikt_internal(wiki_lang, word).await {
         (Some(link), Some(result)) => {

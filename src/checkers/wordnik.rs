@@ -11,7 +11,7 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://www.wordnik.com/words/WORD
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 375-403)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 375-403)
 pub async fn wordnik(word: &str) -> CheckerResult {
     match Earl::new("https://www.wordnik.com", "/words/", None) {
         Ok(mut earl) => {

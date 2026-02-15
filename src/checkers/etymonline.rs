@@ -6,7 +6,7 @@ use super::etym;
 /// Wrapper around the etym() helper that returns only the boolean result
 /// (discards the message string).
 /// 
-/// Ported from: /Users/hippietrail/hippiebot.js/commands/isaword.js (line 434-438)
+/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 434-438)
 pub async fn etymonline(word: &str) -> CheckerResult {
     let (result, _message) = etym::etym(word).await;
     
