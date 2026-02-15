@@ -168,3 +168,89 @@ pub async fn format_and_print_results(word: &str, results: &[CheckerResult]) {
 
     println!("\n{}", message);
 }
+
+/// Run the word checker against a single dictionary
+pub async fn run_cli_single(word: &str, dictionary: &str) {
+    let result = checker_single(word, dictionary).await;
+    
+    match result {
+        Some(result) => {
+            println!("[ISAWORD] Checking '{}' in {}", word, result.name);
+            match result.result {
+                Some(true) => println!("✓ Found"),
+                Some(false) => println!("✗ Not found"),
+                None => println!("? Unknown/Error"),
+            }
+        }
+        None => {
+            eprintln!("[ISAWORD] Unknown dictionary: {}", dictionary);
+            eprintln!("Available dictionaries:");
+            eprintln!("  - american-heritage");
+            eprintln!("  - cambridge");
+            eprintln!("  - chambers");
+            eprintln!("  - dictionary-com");
+            eprintln!("  - etymonline");
+            eprintln!("  - longman");
+            eprintln!("  - merriam-webster");
+            eprintln!("  - oed");
+            eprintln!("  - oxford-learners");
+            eprintln!("  - wordnet");
+            eprintln!("  - wordnik");
+            eprintln!("  - wiktionary");
+            eprintln!("  - urban-dictionary");
+            std::process::exit(1);
+        }
+    }
+}
+
+/// Check a word against a single dictionary
+fn checker_single_name_to_lowercase(name: &str) -> String {
+    name.to_lowercase().replace("_", "-")
+}
+
+pub async fn checker_single(word: &str, dictionary: &str) -> Option<CheckerResult> {
+    let dict = checker_single_name_to_lowercase(dictionary);
+    
+    match dict.as_str() {
+        "american-heritage" | "american_heritage" | "ahd" => {
+            Some(checkers::ahd::ahd(word).await)
+        }
+        "cambridge" => {
+            Some(checkers::cambridge::cambridge(word).await)
+        }
+        "chambers" => {
+            Some(checkers::chambers::chambers(word).await)
+        }
+        "dictionary-com" | "dictionary_com" | "dictcom" => {
+            Some(checkers::dictcom::dictcom(word).await)
+        }
+        "etymonline" | "etym" => {
+            Some(checkers::etymonline::etymonline(word).await)
+        }
+        "longman" => {
+            Some(checkers::longman::longman(word).await)
+        }
+        "merriam-webster" | "merriam_webster" | "mw" => {
+            Some(checkers::mw::mw(word).await)
+        }
+        "oed" => {
+            Some(checkers::oed::oed(word).await)
+        }
+        "oxford-learners" | "oxford_learners" | "oxford" | "oxlearn" => {
+            Some(checkers::oxfordlearners::oxfordlearners(word).await)
+        }
+        "wordnet" => {
+            Some(checkers::wordnet::wordnet(word).await)
+        }
+        "wordnik" => {
+            Some(checkers::wordnik::wordnik(word).await)
+        }
+        "wiktionary" | "wikt" => {
+            Some(checkers::wikt::wikt("en", word).await)
+        }
+        "urban-dictionary" | "urban_dictionary" | "urban" => {
+            Some(checkers::urban::urban(word).await)
+        }
+        _ => None,
+    }
+}

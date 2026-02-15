@@ -29,3 +29,6 @@ url = "2"
 
 # Utilities for futures coordination (join_all, etc)
 futures = "0.3"
+
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
