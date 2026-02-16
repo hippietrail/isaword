@@ -1,6 +1,5 @@
 use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
-use crate::utils::dom::{DomOpts, find_body_index};
 
 /// Merriam-Webster Dictionary checker
 /// 
@@ -18,22 +17,24 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 229-258)
 pub async fn mw(word: &str) -> CheckerResult {
+    // Try plain Earl without custom headers first - reqwest might have better defaults
     match Earl::new("https://www.merriam-webster.com", "/dictionary/", None) {
         Ok(mut earl) => {
             earl.set_last_path_segment(word);
             
-            match earl.fetch_dom().await {
-                 Ok(dom) => {
-                     let body_idx = find_body_index(&dom).unwrap_or(2);
-                     // Navigate to body
+            match earl.fetch_text().await {
+                Ok(text) => {
+                    let dom = scraper::Html::parse_document(&text);
+                    
+                    // First domstroll: navigate to body
                      match domstroll(
-                         "mw",
-                         false,
-                         &dom,
-                         &[
-                             (body_idx, "body", None),
-                         ],
-                     ) {
+                        "mw.1",
+                        false,
+                        &dom,
+                        &[
+                            (2, "body", None),
+                        ],
+                    ) {
                         Ok(body_elem) => {
                             let body_classes = body_elem
                                 .value()
@@ -41,11 +42,6 @@ pub async fn mw(word: &str) -> CheckerResult {
                                 .unwrap_or("")
                                 .split_whitespace()
                                 .collect::<Vec<_>>();
-                            
-                            println!("[ISAWORD/mw] {} body class: {}", 
-                                word,
-                                body_classes.iter().map(|c| format!("'{}'", c)).collect::<Vec<_>>().join(", ")
-                            );
                             
                             // Check for definitions-page class
                             if !body_classes.contains(&"definitions-page") {
@@ -57,34 +53,45 @@ pub async fn mw(word: &str) -> CheckerResult {
                             }
                             
                             // definitions-page found, check for partial matches
-                            // Look for .redesign-container in the hierarchy
-                            match domstroll(
-                                "mw",
-                                false,
-                                &dom,
-                                &[
-                                    (body_idx, "body", None),
-                                    (17, "div", Some(DomOpts { cls: Some("outer-container".to_string()), ..Default::default() })),
-                                    (1, "div", Some(DomOpts { cls: Some("main-container".to_string()), ..Default::default() })),
-                                    (3, "div", Some(DomOpts { cls: Some("redesign-container".to_string()), optional: true, ..Default::default() })),
-                                ],
-                            ) {
-                                Ok(_redesign_container) => {
-                                    println!("[ISAWORD/mw] {} maybeRedesignContainer: exists", word);
-                                    CheckerResult {
-                                        name: "Merriam-Webster",
-                                        result: Some(true),
-                                        is_community: false,
-                                    }
+                            // Look for .redesign-container in body's children
+                            let outer_container_found = body_elem.children()
+                                .filter_map(|child| scraper::element_ref::ElementRef::wrap(child))
+                                .find(|el| {
+                                    el.value().name() == "div" && 
+                                    el.value().attr("class")
+                                        .map(|cls| cls.contains("outer-container"))
+                                        .unwrap_or(false)
+                                });
+                            
+                            let has_redesign = match outer_container_found {
+                                Some(outer) => {
+                                    outer.children()
+                                        .filter_map(|child| scraper::element_ref::ElementRef::wrap(child))
+                                        .find(|el| {
+                                            el.value().name() == "div" && 
+                                            el.value().attr("class")
+                                                .map(|cls| cls.contains("main-container"))
+                                                .unwrap_or(false)
+                                        })
+                                        .and_then(|main| {
+                                            main.children()
+                                                .filter_map(|child| scraper::element_ref::ElementRef::wrap(child))
+                                                .find(|el| {
+                                                    el.value().name() == "div" && 
+                                                    el.value().attr("class")
+                                                        .map(|cls| cls.contains("redesign-container"))
+                                                        .unwrap_or(false)
+                                                })
+                                        })
+                                        .is_some()
                                 }
-                                Err(_) => {
-                                    println!("[ISAWORD/mw] {} maybeRedesignContainer: does not exist", word);
-                                    CheckerResult {
-                                        name: "Merriam-Webster",
-                                        result: Some(false),
-                                        is_community: false,
-                                    }
-                                }
+                                None => false,
+                            };
+                            
+                            CheckerResult {
+                                name: "Merriam-Webster",
+                                result: Some(has_redesign),
+                                is_community: false,
                             }
                         }
                         Err(e) => {

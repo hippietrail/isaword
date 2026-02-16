@@ -1,5 +1,5 @@
 use crate::{Earl, domstroll};
-use crate::utils::dom::{DomOpts, find_body_index};
+use crate::utils::dom::DomOpts;
 
 /// Etymonline checker - BROKEN DUE TO CLIENT-SIDE RENDERING
 /// 

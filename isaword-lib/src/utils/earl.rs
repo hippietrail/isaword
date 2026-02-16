@@ -87,8 +87,8 @@ impl Earl {
 
     pub fn set_last_path_segment(&mut self, segment: &str) {
         let base = self.url.path();
-        // if basic pathname is "/dictionary/english/", add segment to end
-        self.url.set_path(&format!("{}{}", base.trim_end_matches('/'), segment));
+        // if basic pathname is "/dictionary/", add segment to end
+        self.url.set_path(&format!("{}{}", base.trim_end_matches('/'), format!("/{}", segment)));
     }
 
     pub fn set_search_param(&mut self, key: &str, value: &str) {
