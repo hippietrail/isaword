@@ -1,22 +1,30 @@
 use crate::{Earl, domstroll};
 use crate::utils::dom::{DomOpts, find_body_index};
 
-/// Etymonline checker
+/// Etymonline checker - BROKEN DUE TO CLIENT-SIDE RENDERING
 /// 
-/// Complex scraper that navigates to word sections and extracts names to match against input.
-/// Returns (bool_or_null, message_string) where bool indicates if word was found.
+/// STATUS: ❌ BROKEN - Etymonline switched to React/Next.js with client-side rendering
 /// 
-/// Logic:
-/// - If first 3 children are [h2, p, p], word is not in etymonline (return null)
-/// - Otherwise, find all div.word--C9UPa nodes (word sections)
-/// - Extract word names from each section
-/// - Match against input (case-insensitive)
-/// - Return true if any match, false if none match
-/// - Append helpful messages
+/// The static HTML only contains scripts. No div#root exists in fetched HTML.
+/// The page is rendered in the browser via JavaScript, not available to static scrapers.
+/// 
+/// INVESTIGATION:
+/// - HTML structure is now: <html id="__next_error__"> with <body><script>*15</script></body>
+/// - div#root (expected mount point) is not present
+/// - All content is loaded client-side via JavaScript
+/// - TypeScript version may work if running in headless browser environment
+/// 
+/// This explains why TypeScript version "works" - it likely runs with node environment
+/// that can execute JavaScript or uses a headless browser adapter.
+///
+/// POSSIBLE FIXES:
+/// 1. Use headless browser (Playwright/Puppeteer) - JS execution overhead
+/// 2. Find alternative Etymonline API
+/// 3. Accept that Etymonline is unavailable for static scraping
 /// 
 /// URL structure: https://etymonline.com/word/WORD
 /// 
-/// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/ute/etym.ts (line 4-57)
+/// Ported from (no longer compatible): https://github.com/hippietrail/hippiebot.js/blob/main/ute/etym.ts (line 4-57)
 pub async fn etym(word: &str) -> (Option<bool>, String) {
     let result = etym_internal(word).await;
     // Return just the bool, not the message string
@@ -30,14 +38,14 @@ async fn etym_internal(word: &str) -> (Option<bool>, String) {
             
             match earl.fetch_dom().await {
                  Ok(dom) => {
-                     let body_idx = find_body_index(&dom).unwrap_or(2);
-                     // Navigate to the main container
-                     match domstroll(
-                         "etym",
-                         false,
-                         &dom,
-                         &[
-                             (body_idx, "body", None),
+                    // NOTE: Etymonline is client-side rendered, no div#root in static HTML
+                    // Attempting traversal for reference, but will always fail
+                    match domstroll(
+                        "etym",
+                       false,
+                        &dom,
+                        &[
+                             (1, "body", None),
                             (1, "div", Some(DomOpts { id: Some("root".to_string()), ..Default::default() })),
                             (0, "div", None),
                             (0, "div", Some(DomOpts { cls: Some("container--1mazc".to_string()), ..Default::default() })),
@@ -45,7 +53,7 @@ async fn etym_internal(word: &str) -> (Option<bool>, String) {
                             (0, "div", Some(DomOpts { cls: Some("ant-row-flex".to_string()), ..Default::default() })),
                             (0, "div", Some(DomOpts { cls: Some("ant-col-lg-17".to_string()), ..Default::default() })),
                         ],
-                    ) {
+                     ) {
                         Ok(lg17) => {
                             // Check if word is in etymonline at all
                             let children: Vec<_> = lg17.children().filter_map(|c| {
