@@ -45,7 +45,7 @@ impl Earl {
 
         Ok(Earl {
             url,
-            client: Client::new(),
+            client: Client::builder().redirect(reqwest::redirect::Policy::default()).build()?,
             headers: None,
         })
     }
@@ -68,7 +68,7 @@ impl Earl {
 
         Ok(Earl {
             url,
-            client: Client::new(),
+            client: Client::builder().redirect(reqwest::redirect::Policy::default()).build()?,
             headers: Some(headers),
         })
     }
