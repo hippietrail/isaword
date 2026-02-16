@@ -43,8 +43,8 @@ async fn main() {
     let args = Args::parse();
 
     if let Some(dict) = &args.dictionary {
-        isaword::run_cli_single(args.word.as_str(), dict).await
+        isaword_lib::run_cli_single(args.word.as_str(), dict).await
     } else {
-        isaword::run_cli(args.word.as_str()).await
+        isaword_lib::run_cli(args.word.as_str()).await
     }
 }

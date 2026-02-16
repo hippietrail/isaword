@@ -1,0 +1,17 @@
+[package]
+name = "isaword-cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "isaword"
+path = "src/main.rs"
+
+[dependencies]
+isaword-lib = { path = "../isaword-lib" }
+
+# Async runtime
+tokio = { version = "1", features = ["macros"] }
+
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }

@@ -1,0 +1,27 @@
+[package]
+name = "isaword-lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# HTTP client for web scraping
+reqwest = { version = "0.11", features = ["json"] }
+
+# Async runtime - required by reqwest's transitive dependencies
+tokio = { version = "1", features = ["rt-multi-thread"] }
+
+# HTML DOM parsing and traversal
+scraper = "0.17"
+
+# JSON serialization/deserialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# URL parsing and manipulation
+url = "2"
+
+# Utilities for futures coordination
+futures = "0.3"
+
+# ANSI colors for terminal output
+colored = "2"

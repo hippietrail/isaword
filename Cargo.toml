@@ -1,34 +1,3 @@
-[package]
-name = "isaword"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-# HTTP client for web scraping. Investigated smol (lighter-weight runtime) but found
-# that the TLS layer is the blocker: reqwest + any TLS variant → tokio-rustls → tokio.
-# Using futures-rustls would require ditching reqwest for a custom HTTP client (~200+ LOC).
-# For a CLI tool, tokio's ~100ms startup overhead is negligible and worth the ecosystem
-# maturity/reliability tradeoff. See issue isaword-aca for full decision details.
-reqwest = { version = "0.11", features = ["json"] }
-
-# Async runtime - required by reqwest's transitive dependencies (hyper, etc)
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-
-# HTML DOM parsing and traversal
-scraper = "0.17"
-
-# JSON serialization/deserialization
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-
-# URL parsing and manipulation
-url = "2"
-
-# Utilities for futures coordination (join_all, etc)
-futures = "0.3"
-
-# CLI argument parsing
-clap = { version = "4", features = ["derive"] }
-
-# ANSI colors for terminal output
-colored = "2"
+[workspace]
+members = ["isaword-lib", "isaword-cli"]
+resolver = "2"
