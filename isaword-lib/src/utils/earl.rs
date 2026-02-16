@@ -105,6 +105,8 @@ impl Earl {
 
     /// Fetch and parse as JSON
     pub async fn fetch_json(&self) -> Result<Value, Box<dyn std::error::Error>> {
+        eprintln!("[Earl] Fetching JSON from: {}", self.url);
+        
         let mut req = self.client.get(self.url.as_str());
         
         if let Some(hdrs) = &self.headers {
@@ -120,12 +122,16 @@ impl Earl {
 
     /// Fetch and parse as HTML DOM
     pub async fn fetch_dom(&self) -> Result<Html, Box<dyn std::error::Error>> {
+        eprintln!("[Earl] Fetching DOM from: {}", self.url);
+        
         let text = self.fetch_text().await?;
         Ok(Html::parse_document(&text))
     }
 
     /// Fetch raw HTML text
     pub async fn fetch_text(&self) -> Result<String, Box<dyn std::error::Error>> {
+        eprintln!("[Earl] Fetching text from: {}", self.url);
+        
         let mut req = self.client.get(self.url.as_str());
         
         if let Some(hdrs) = &self.headers {
