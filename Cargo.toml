@@ -4,14 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# HTTP client for web scraping. We initially tried to use smol (lighter weight)
-# instead of tokio, but reqwest's dependencies (hyper, hickory-dns) require tokio:
-# - hyper 1.x needs tokio for its reactor
-# - hickory-dns depends on tokio internally via hickory-resolver
-# Even disabling default-features and using rustls-tls doesn't avoid tokio.
-# Alternative: surf/isahc have better smol support, but require API rewrite.
-# Decision: Use tokio. CLI startup overhead is negligible, ecosystem is mature.
-# See issue isaword-8uv for investigation details.
+# HTTP client for web scraping. Investigated smol (lighter-weight runtime) but found
+# that the TLS layer is the blocker: reqwest + any TLS variant → tokio-rustls → tokio.
+# Using futures-rustls would require ditching reqwest for a custom HTTP client (~200+ LOC).
+# For a CLI tool, tokio's ~100ms startup overhead is negligible and worth the ecosystem
+# maturity/reliability tradeoff. See issue isaword-aca for full decision details.
 reqwest = { version = "0.11", features = ["json"] }
 
 # Async runtime - required by reqwest's transitive dependencies (hyper, etc)

@@ -1,0 +1,3 @@
+Would there be any value in us have a web API to access our current dictionary? it would have to use `FstDictionary` to have all expanded forms. Minimal would just return a `bool` `true` or `false` to say the exact word is in the dictionary. Ideal would return the metadata.
+It may or may not already be possible via `writewithharper.com`? flurge in the spoigle woygle
+

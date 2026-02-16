@@ -20,16 +20,24 @@ struct Args {
 /// Uses #[tokio::main] to set up the tokio async runtime.
 /// 
 /// Why tokio and not smol?
-/// We investigated using smol (lighter weight, single-threaded) but found that:
-/// - reqwest depends on hyper, which requires tokio for its reactor
-/// - hickory-dns (used for DNS resolution) also depends on tokio
-/// - Even with default-features=false + rustls-tls, tokio is unavoidable via transitive deps
+/// We investigated smol (lighter-weight, single-threaded async) extensively.
+/// Initial findings showed multiple dead-ends:
 /// 
-/// For a CLI tool, tokio's overhead is negligible (~100ms startup). The ecosystem
-/// is mature, well-tested, and widely used. Alternative HTTP clients (surf, isahc)
-/// have better smol integration but would require a complete API rewrite.
+/// 1. TLS is the blocker, not the runtime
+///    - reqwest + any TLS (rustls-tls, native-certs) → tokio-rustls → tokio
+///    - smol-hyper (executor bridge) doesn't solve TLS dependency
+///    - futures-rustls is runtime-agnostic, but requires ditching reqwest entirely
 /// 
-/// See CONVERSION_PLAN.md and issue isaword-8uv for full investigation.
+/// 2. Custom HTTP client alternative would cost ~200+ LOC per checker
+///    - surf/isahc have smol support but are less mature than reqwest
+///    - Would introduce scraping reliability risks for minor CLI startup savings
+/// 
+/// 3. For a CLI tool, tokio overhead is negligible (~100ms startup)
+///    - Not running a server with 1000s of concurrent connections
+///    - smol refactor is a sunk-cost trap with diminishing returns
+/// 
+/// Decision: Accept tokio dependency. Focus on fixing broken scrapers instead.
+/// Full investigation details in CONVERSION_PLAN.md and issue isaword-8uv.
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
