@@ -2,33 +2,53 @@ use crate::{Earl, domstroll};
 use crate::checkers::CheckerResult;
 use crate::utils::dom::{DomOpts, find_body_index};
 
-/// Dictionary.com checker
+/// Dictionary.com checker - CURRENTLY BLOCKED BY BOT DETECTION
 /// 
-/// Checks the main element's children count:
-/// - 3 children = word not found
-/// - 4 children = word found
-/// - anything else = unknown/error
+/// STATUS: ❌ BROKEN - Every request returns 404 page regardless of word or headers
 /// 
-/// URL structure: https://www.dictionary.com/browse/WORD
+/// ROOT CAUSE: Dictionary.com is blocking reqwest/Rust HTTP clients at the network level.
+/// - All requests get "404: Not found | Dictionary.com" response with pg-404 body class
+/// - Tested with browser User-Agent header: still 404
+/// - `curl` from CLI works fine (200 OK) - same IP
+/// - Node.js `fetch` (used in TypeScript version) may have different IP routing
+/// - Not a Cloudflare challenge (no cf-challenge headers in 404 response)
+/// - Likely: reqwest's IP range is blacklisted for bot activity
 /// 
-/// NOTE: TypeScript version has been updated with better detection logic (isaword.ts lines 348-391):
+/// POSSIBLE FIXES (not yet attempted):
+/// 1. Residential proxy (would mask IP range)
+/// 2. Headless browser (Playwright/Puppeteer) - adds JS rendering overhead
+/// 3. Find alternative API endpoint
+/// 4. Accept that Dictionary.com is unavailable for automated checking
+/// 
+/// See isaword-bnk for issue tracking.
+/// 
+/// TypeScript version has better detection logic (isaword.ts lines 348-391) but same network block:
 /// - Check for "pg-dcom-noresult" body class -> not found
 /// - Check for "sec-redirect-tip" in box-content-primary children -> misspelling
-/// This Rust version still uses the older simpler approach. See isaword-bnk for implementation.
 /// 
 /// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 327-350)
 pub async fn dictcom(word: &str) -> CheckerResult {
-    match Earl::new("https://www.dictionary.com", "/browse/", None) {
+    // Try with a browser User-Agent to avoid bot detection
+    let mut headers = std::collections::HashMap::new();
+    headers.insert("User-Agent".to_string(), 
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36".to_string());
+    
+    match Earl::with_headers("https://www.dictionary.com", "/browse/", None, headers) {
         Ok(mut earl) => {
             earl.set_last_path_segment(word);
             
-            match earl.fetch_dom().await {
-                 Ok(dom) => {
+            match earl.fetch_text().await {
+                 Ok(text) => {
+                     // Debug: print raw HTML
+                     eprintln!("[ISAWORD/dict.com] Raw text (first 1500 chars):\n{}\n---", 
+                               &text.chars().take(1500).collect::<String>());
+                     let dom = scraper::Html::parse_document(&text);
+                     
                      let body_idx = find_body_index(&dom).unwrap_or(2);
                      // Navigate: html > body > #root > .dictionary-site > main
                      match domstroll(
                          "dict.com",
-                         false,
+                         true,
                          &dom,
                          &[
                              (body_idx, "body", None),
