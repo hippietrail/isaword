@@ -10,7 +10,7 @@ struct Args {
 
     /// Only check a specific dictionary (e.g., 'chambers', 'oxford', 'cambridge')
     /// Available: american-heritage, cambridge, chambers, dictionary-com, etymonline,
-    /// longman, merriam-webster, oed, oxford-learners, urban-dictionary, wiktionary, wordnet, wordnik
+    /// longman, merriam-webster, oed, oxford-learners, urban-dictionary, wiktionary, wordnik
     #[arg(short, long)]
     dictionary: Option<String>,
 }

@@ -5,8 +5,10 @@
 //! - https://github.com/hippietrail/lyre/blob/main/commands/isaword.js
 //! 
 //! Both Discord bot implementations are identical. This Rust version maintains
-//! the same logic for checking 14 different dictionaries in parallel and
+//! the same logic for checking 12 different dictionaries in parallel and
 //! formatting results with the same human-friendly output.
+//! 
+//! NOTE: WordNet (13th dict) removed - online interface deprecated (see isaword-qrk)
 
 pub mod utils;
 pub mod checkers;
@@ -23,7 +25,7 @@ pub async fn run_cli(word: &str) {
     format_and_print_results(word, &results).await;
 }
 
-/// Check a word against all 13 dictionaries in parallel
+/// Check a word against all 12 active dictionaries in parallel
 /// 
 /// Returns results in order:
 /// 1. American Heritage
@@ -35,14 +37,15 @@ pub async fn run_cli(word: &str) {
 /// 7. Merriam-Webster
 /// 8. OED
 /// 9. Oxford Learners
-/// 10. Wordnet
-/// 11. Wordnik
-/// 12. Wiktionary (community)
-/// 13. Urban Dictionary (community)
+/// 10. Wordnik
+/// 11. Wiktionary (community)
+/// 12. Urban Dictionary (community)
+/// 
+/// NOTE: WordNet was removed (13th dict) - online interface deprecated
 pub async fn checker_all(word: &str) -> Vec<CheckerResult> {
     // Execute all checkers concurrently
     // Use tokio::join! macro which supports different future types
-    let (ahd, cambridge, chambers, dictcom, etymonline, longman, mw, oed, oxfordlearners, wordnet, wordnik, wikt_en, urban) = tokio::join!(
+    let (ahd, cambridge, chambers, dictcom, etymonline, longman, mw, oed, oxfordlearners, wordnik, wikt_en, urban) = tokio::join!(
         checkers::ahd::ahd(word),
         checkers::cambridge::cambridge(word),
         checkers::chambers::chambers(word),
@@ -52,7 +55,6 @@ pub async fn checker_all(word: &str) -> Vec<CheckerResult> {
         checkers::mw::mw(word),
         checkers::oed::oed(word),
         checkers::oxfordlearners::oxfordlearners(word),
-        checkers::wordnet::wordnet(word),
         checkers::wordnik::wordnik(word),
         checkers::wikt::wikt("en", word),
         checkers::urban::urban(word),
@@ -60,7 +62,7 @@ pub async fn checker_all(word: &str) -> Vec<CheckerResult> {
 
     vec![
         ahd, cambridge, chambers, dictcom, etymonline, longman, mw, oed,
-        oxfordlearners, wordnet, wordnik, wikt_en, urban,
+        oxfordlearners, wordnik, wikt_en, urban,
     ]
 }
 
@@ -212,10 +214,10 @@ pub async fn run_cli_single(word: &str, dictionary: &str) {
             eprintln!("  - merriam-webster");
             eprintln!("  - oed");
             eprintln!("  - oxford-learners");
-            eprintln!("  - wordnet");
             eprintln!("  - wordnik");
             eprintln!("  - wiktionary");
             eprintln!("  - urban-dictionary");
+            eprintln!("\nNote: WordNet removed (online interface deprecated)");
             std::process::exit(1);
         }
     }
@@ -256,9 +258,6 @@ pub async fn checker_single(word: &str, dictionary: &str) -> Option<CheckerResul
         }
         "oxford-learners" | "oxford_learners" | "oxford" | "oxlearn" => {
             Some(checkers::oxfordlearners::oxfordlearners(word).await)
-        }
-        "wordnet" => {
-            Some(checkers::wordnet::wordnet(word).await)
         }
         "wordnik" => {
             Some(checkers::wordnik::wordnik(word).await)
