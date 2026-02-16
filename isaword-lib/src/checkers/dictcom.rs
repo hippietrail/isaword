@@ -11,6 +11,11 @@ use crate::utils::dom::{DomOpts, find_body_index};
 /// 
 /// URL structure: https://www.dictionary.com/browse/WORD
 /// 
+/// NOTE: TypeScript version has been updated with better detection logic (isaword.ts lines 348-391):
+/// - Check for "pg-dcom-noresult" body class -> not found
+/// - Check for "sec-redirect-tip" in box-content-primary children -> misspelling
+/// This Rust version still uses the older simpler approach. See isaword-bnk for implementation.
+/// 
 /// Ported from: https://github.com/hippietrail/hippiebot.js/blob/main/commands/isaword.js (line 327-350)
 pub async fn dictcom(word: &str) -> CheckerResult {
     match Earl::new("https://www.dictionary.com", "/browse/", None) {
